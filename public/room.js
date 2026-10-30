@@ -153,3 +153,28 @@ fetch('/api/auth/me').then(r => r.json()).then(data => {
     window.location.href = '/';
   }
 });
+// مشاركة كود الغرفة
+function shareRoom() {
+  const code = document.getElementById('room-code').textContent;
+  if (code && code !== 'HIDDEN' && code.trim() !== '') {
+    if (navigator.share) {
+      navigator.share({ title: 'Watch Party', text: 'انضم لغرفتي بكود: ' + code });
+    } else {
+      navigator.clipboard.writeText(code).then(() => {
+        alert('تم نسخ الكود: ' + code);
+      }).catch(() => {
+        prompt('انسخ الكود يدوياً:', code);
+      });
+    }
+  } else {
+    alert('كود الغرفة غير متاح');
+  }
+}
+
+// إظهار/إخفاء قائمة الأعضاء
+function toggleMembers() {
+  const list = document.getElementById('member-list');
+  if (list) {
+    list.style.display = list.style.display === 'none' ? 'flex' : 'none';
+  }
+}

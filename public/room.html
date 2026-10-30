@@ -11,7 +11,13 @@
   <div class="room-container">
     <!-- القائمة الجانبية (الأعضاء) -->
     <div class="sidebar">
-      <div class="header">> MEMBERS</div>
+      <div class="header" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+        <span>> MEMBERS</span>
+        <div style="display:flex; gap:5px;">
+          <button onclick="shareRoom()" style="padding:2px 6px; font-size:10px; background:transparent; color:var(--accent); border:1px solid var(--accent);">[ SHARE ]</button>
+          <button onclick="toggleMembers()" style="padding:2px 6px; font-size:10px; background:transparent; color:var(--accent); border:1px solid var(--accent);">[ LIST ]</button>
+        </div>
+      </div>
       <ul id="member-list" class="member-list"></ul>
       <div class="room-info">
         <div>ROOM: <span id="room-name" class="highlight"></span></div>
@@ -57,3 +63,4 @@
   <script src="/room.js"></script>
 </body>
 </html>
+

@@ -9,7 +9,18 @@ import roomRoutes from './routes/rooms.js'; // سطر جديد
 const app = express();
 const httpServer = createServer(app);
 
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      frameSrc: ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.youtube.com", "https://www.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https://i.ytimg.com"],
+      connectSrc: ["'self'", "wss:", "https://www.youtube.com"]
+    }
+  },
+  crossOriginEmbedderPolicy: false
+}));
 app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
 
