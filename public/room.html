@@ -9,7 +9,8 @@
 </head>
 <body class="room-body">
   <div class="room-container">
-    <!-- القائمة الجانبية (الأعضاء) -->
+    
+    <!-- شريط الأعضاء -->
     <div class="sidebar">
       <div class="header" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
         <span>> MEMBERS</span>
@@ -25,18 +26,16 @@
       </div>
     </div>
 
-    <!-- المنطقة الرئيسية (الفيديو + الدردشة) -->
+    <!-- المنطقة الرئيسية -->
     <div class="main-area">
       <div class="video-section">
-        <!-- مشغل يوتيوب -->
-        <div id="player"></div>
+        <!-- مشغل يوتيوب المباشر -->
+        <iframe id="player" src="about:blank" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
         
-        <!-- أدوات التحكم (تظهر للمالك فقط) -->
+        <!-- أدوات التحكم -->
         <div id="controls" class="controls" style="display: none;">
           <input type="text" id="video-url" placeholder="YouTube URL...">
           <button onclick="loadVideo()">[ LOAD ]</button>
-          <button onclick="playVideo()">[ PLAY ]</button>
-          <button onclick="pauseVideo()">[ PAUSE ]</button>
         </div>
       </div>
 
@@ -44,7 +43,6 @@
       <div class="chat-section">
         <div id="chat-messages" class="chat-messages"></div>
         
-        <!-- شريط الرد (يظهر عند الرد على رسالة) -->
         <div id="reply-bar" class="reply-bar" style="display: none;">
           <span id="reply-text"></span>
           <button onclick="cancelReply()">X</button>
@@ -59,8 +57,6 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="/room.js"></script>
 </body>
 </html>
-

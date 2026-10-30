@@ -1,40 +1,10 @@
 const socket = io();
-let player;
 let currentRoomId = new URLSearchParams(window.location.search).get('id');
 let currentUser = null;
 let replyTo = null;
 let isOwner = false;
 
-// 1. تهيئة مشغل يوتيوب
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '100%',
-    width: '100%',
-    videoId: '',
-    playerVars: { 
-      'autoplay': 0, 
-      'controls': 0, 
-      'disablekb': 1,
-      'origin': window.location.origin, // إخبار يوتيوب بمصدر الطلب
-      'widget_referrer': window.location.origin // ترويسة إضافية
-    },
-    events: {
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
-
-// إرسال الأحداث للمالك فقط
-function onPlayerStateChange(event) {
-  if (!isOwner) return;
-  if (event.data === YT.PlayerState.PLAYING) {
-    socket.emit('video:control', { roomId: currentRoomId, action: 'play', time: player.getCurrentTime() });
-  } else if (event.data === YT.PlayerState.PAUSED) {
-    socket.emit('video:control', { roomId: currentRoomId, action: 'pause', time: player.getCurrentTime() });
-  }
-}
-
-// 2. جلب بيانات الغرفة عند التحميل
+// جلب بيانات الغرفة
 async function initRoom() {
   try {
     const res = await fetch(`/api/rooms/${currentRoomId}`, { credentials: 'include' });
@@ -44,18 +14,20 @@ async function initRoom() {
     document.getElementById('room-name').textContent = data.room.name;
     document.getElementById('room-code').textContent = data.room.join_code || 'HIDDEN';
     
-    // التحقق من الصلاحيات
-    const me = data.members.find(m => m.username === currentUser);
+    // التحقق من صلاحيات المالك
+    const me = data.members.find(m => m.username.trim() === currentUser.trim());
     isOwner = me && (me.role === 'owner' || me.role === 'admin');
-    if (isOwner) document.getElementById('controls').style.display = 'flex';
+    
+    if (isOwner) {
+      document.getElementById('controls').style.display = 'flex';
+    }
 
-    // الانضمام للغرفة عبر Socket
     socket.emit('room:join', { roomId: currentRoomId });
 
   } catch (e) { console.error(e); }
 }
 
-// 3. استقبال الأحداث من Socket.IO
+// استقبال الأعضاء
 socket.on('room:members', (members) => {
   const list = document.getElementById('member-list');
   list.innerHTML = '';
@@ -66,16 +38,13 @@ socket.on('room:members', (members) => {
   });
 });
 
+// استقبال الرسائل
 socket.on('chat:new', (msg) => {
   const chatBox = document.getElementById('chat-messages');
   const div = document.createElement('div');
   div.className = 'chat-msg';
   
-  let replyHtml = '';
-  if (msg.replyToId) {
-    // للتبسيط، نعرض معرف الرسالة الأصلية فقط
-    replyHtml = `<span class="reply-context">↳ رد على رسالة سابقة</span>`;
-  }
+  let replyHtml = msg.replyToId ? `<span class="reply-context">↳ رد على رسالة سابقة</span>` : '';
 
   div.innerHTML = `
     ${replyHtml}
@@ -89,36 +58,30 @@ socket.on('chat:new', (msg) => {
 });
 
 // استقبال أوامر الفيديو من المالك
-socket.on('video:command', ({ action, time }) => {
-  if (action === 'play') {
-    player.seekTo(time, true);
-    player.playVideo();
-  } else if (action === 'pause') {
-    player.seekTo(time, true);
-    player.pauseVideo();
-  } else if (action === 'load') {
-    player.loadVideoById(action.videoId);
+socket.on('video:command', ({ action, videoId }) => {
+  const iframe = document.getElementById('player');
+  if (!iframe) return;
+  if (action === 'load' && videoId) {
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
   }
 });
 
-// 4. دوال التحكم
+// تحميل فيديو (للمالك)
 function loadVideo() {
   const url = document.getElementById('video-url').value;
-  const videoId = url.split('v=')[1] || url.split('youtu.be/')[1] || url;
+  if (!url) return;
+  let videoId = url;
+  if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+  else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+  
   if (videoId) {
-    player.loadVideoById(videoId);
+    const iframe = document.getElementById('player');
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
     socket.emit('video:control', { roomId: currentRoomId, action: 'load', videoId });
   }
 }
 
-function playVideo() {
-  player.playVideo();
-}
-
-function pauseVideo() {
-  player.pauseVideo();
-}
-
+// إرسال رسالة
 function sendMessage() {
   const input = document.getElementById('chat-input');
   const content = input.value.trim();
@@ -149,8 +112,24 @@ function cancelReply() {
   document.getElementById('reply-bar').style.display = 'none';
 }
 
+// أزرار المشاركة والأعضاء
+function shareRoom() {
+  const code = document.getElementById('room-code').textContent;
+  if (code && code !== 'HIDDEN' && code.trim() !== '') {
+    if (navigator.share) {
+      navigator.share({ title: 'Watch Party', text: 'انضم لغرفتي بكود: ' + code });
+    } else {
+      navigator.clipboard.writeText(code).then(() => alert('تم نسخ الكود: ' + code));
+    }
+  }
+}
+
+function toggleMembers() {
+  const list = document.getElementById('member-list');
+  if (list) list.style.display = list.style.display === 'none' ? 'flex' : 'none';
+}
+
 // بدء التشغيل
-// نستخدم /api/auth/me لمعرفة من هو المستخدم الحالي
 fetch('/api/auth/me').then(r => r.json()).then(data => {
   if (data.user) {
     currentUser = data.user.username;
@@ -159,28 +138,3 @@ fetch('/api/auth/me').then(r => r.json()).then(data => {
     window.location.href = '/';
   }
 });
-// مشاركة كود الغرفة
-function shareRoom() {
-  const code = document.getElementById('room-code').textContent;
-  if (code && code !== 'HIDDEN' && code.trim() !== '') {
-    if (navigator.share) {
-      navigator.share({ title: 'Watch Party', text: 'انضم لغرفتي بكود: ' + code });
-    } else {
-      navigator.clipboard.writeText(code).then(() => {
-        alert('تم نسخ الكود: ' + code);
-      }).catch(() => {
-        prompt('انسخ الكود يدوياً:', code);
-      });
-    }
-  } else {
-    alert('كود الغرفة غير متاح');
-  }
-}
-
-// إظهار/إخفاء قائمة الأعضاء
-function toggleMembers() {
-  const list = document.getElementById('member-list');
-  if (list) {
-    list.style.display = list.style.display === 'none' ? 'flex' : 'none';
-  }
-}
