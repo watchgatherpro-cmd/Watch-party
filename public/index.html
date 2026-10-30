@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Party | ezzi</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="terminal">
+    <div class="header">> WATCH_PARTY_TERMINAL_v1.0</div>
+    
+    <!-- شاشة الدخول -->
+    <div id="auth-screen">
+      <div class="line">> SYSTEM READY. PLEASE AUTHENTICATE.</div>
+      <input type="text" id="username" placeholder="username" autocomplete="off">
+      <input type="password" id="password" placeholder="password">
+      <button onclick="login()">[ LOGIN ]</button>
+      <button onclick="register()">[ REGISTER ]</button>
+      <div id="auth-msg" class="msg"></div>
+    </div>
+
+    <!-- شاشة الغرف (بعد الدخول) -->
+    <div id="rooms-screen" style="display: none;">
+      <div class="line">> AUTHENTICATED AS: <span id="current-user" class="highlight"></span></div>
+      
+      <div class="section">
+        <div class="line">> CREATE NEW ROOM</div>
+        <input type="text" id="room-name" placeholder="room name">
+        <button onclick="createRoom()">[ CREATE ]</button>
+      </div>
+
+      <div class="section">
+        <div class="line">> JOIN EXISTING ROOM</div>
+        <input type="text" id="join-code" placeholder="ROOM CODE" maxlength="6" style="text-transform: uppercase;">
+        <button onclick="joinRoom()">[ JOIN ]</button>
+      </div>
+      <div id="room-msg" class="msg"></div>
+    </div>
+  </div>
+  <script src="/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</body>
+</html>

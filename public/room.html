@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Room | Watch Party</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/room.css">
+</head>
+<body class="room-body">
+  <div class="room-container">
+    <!-- القائمة الجانبية (الأعضاء) -->
+    <div class="sidebar">
+      <div class="header">> MEMBERS</div>
+      <ul id="member-list" class="member-list"></ul>
+      <div class="room-info">
+        <div>ROOM: <span id="room-name" class="highlight"></span></div>
+        <div>CODE: <span id="room-code" class="highlight"></span></div>
+      </div>
+    </div>
+
+    <!-- المنطقة الرئيسية (الفيديو + الدردشة) -->
+    <div class="main-area">
+      <div class="video-section">
+        <!-- مشغل يوتيوب -->
+        <div id="player"></div>
+        
+        <!-- أدوات التحكم (تظهر للمالك فقط) -->
+        <div id="controls" class="controls" style="display: none;">
+          <input type="text" id="video-url" placeholder="YouTube URL...">
+          <button onclick="loadVideo()">[ LOAD ]</button>
+          <button onclick="playVideo()">[ PLAY ]</button>
+          <button onclick="pauseVideo()">[ PAUSE ]</button>
+        </div>
+      </div>
+
+      <!-- الدردشة -->
+      <div class="chat-section">
+        <div id="chat-messages" class="chat-messages"></div>
+        
+        <!-- شريط الرد (يظهر عند الرد على رسالة) -->
+        <div id="reply-bar" class="reply-bar" style="display: none;">
+          <span id="reply-text"></span>
+          <button onclick="cancelReply()">X</button>
+        </div>
+
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="> type message..." onkeypress="handleEnter(event)">
+          <button onclick="sendMessage()">[ SEND ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="/room.js"></script>
+</body>
+</html>

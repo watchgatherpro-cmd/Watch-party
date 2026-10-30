@@ -1,0 +1,260 @@
+/* ===== إعدادات عامة ===== */
+body {
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.room-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+/* ===== شريط الأعضاء (في الأعلى على الهاتف) ===== */
+.sidebar {
+  background: #161b22;
+  border-bottom: 1px solid var(--border);
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar .header {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.member-list {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.member-list li {
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 11px;
+  margin: 0;
+  background: #0d1117;
+}
+
+.member-list .owner-tag {
+  color: #d29922;
+  font-size: 9px;
+  margin-right: 2px;
+}
+
+.room-info {
+  display: none; /* إخفاء تفاصيل الغرفة على الهاتف */
+}
+
+/* ===== المنطقة الرئيسية ===== */
+.main-area {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100vh - 40px);
+}
+
+/* ===== قسم الفيديو ===== */
+.video-section {
+  height: 35vh; /* ارتفاع مناسب للفيديو على الهاتف */
+  background: #000;
+  position: relative;
+  flex-shrink: 0;
+}
+
+#player {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 17, 23, 0.95);
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  border-top: 1px solid var(--border);
+  z-index: 10;
+  flex-wrap: wrap;
+}
+
+.controls input {
+  margin: 0;
+  flex-grow: 1;
+  padding: 5px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #0d1117;
+  color: var(--text);
+}
+
+.controls button {
+  padding: 5px 10px;
+  font-size: 11px;
+  margin: 0;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+/* ===== قسم الدردشة ===== */
+.chat-section {
+  flex-grow: 1;
+  background: #161b22;
+  display: flex;
+  flex-direction: column;
+  height: calc(65vh - 40px); /* يأخذ باقي الشاشة */
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-msg {
+  margin-bottom: 6px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.chat-msg .time { color: #484f58; font-size: 10px; }
+.chat-msg .user { color: var(--accent); font-weight: bold; margin: 0 5px; }
+.chat-msg .content { color: var(--text); }
+.chat-msg button { padding: 1px 4px; font-size: 10px; margin: 0 5px; border: 1px solid #30363d; color: #8b949e; background: transparent; border-radius: 3px; cursor: pointer;}
+
+.reply-bar {
+  background: #21262d;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+}
+
+.reply-bar button {
+  background: transparent;
+  color: var(--error);
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 8px;
+  background: #0d1117;
+  border-top: 1px solid var(--border);
+  align-items: center;
+}
+
+.chat-input-area input {
+  margin: 0;
+  flex-grow: 1;
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  background: #161b22;
+  color: var(--text);
+}
+
+.chat-input-area button {
+  margin: 0 0 0 8px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  font-size: 12px;
+}
+
+/* ===== الوضع الأفقي (Landscape) أو شاشة الحاسوب ===== */
+@media (min-width: 768px) {
+  .room-container {
+    flex-direction: row;
+  }
+  
+  .sidebar {
+    width: 220px;
+    height: 100vh;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: none;
+    border-left: 1px solid var(--border);
+    padding: 15px;
+  }
+  
+  .sidebar .header { margin-bottom: 10px; }
+  
+  .member-list {
+    flex-direction: column;
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .member-list li { 
+    border: none; 
+    padding: 5px 0; 
+    border-bottom: 1px solid #21262d;
+    width: 100%;
+    border-radius: 0;
+  }
+  
+  .room-info { 
+    display: block; 
+    margin-top: auto; 
+    font-size: 12px; 
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  
+  .main-area { 
+    height: 100vh; 
+    flex-direction: row; /* في الشاشات الكبيرة نجعل الفيديو والدردشة جنباً إلى جنب */
+  }
+  
+  .video-section { 
+    height: 100vh; 
+    flex-grow: 2;
+  }
+  
+  .chat-section { 
+    height: 100vh; 
+    width: 350px; 
+    border-top: none;
+    border-right: 1px solid var(--border);
+  }
+  
+  .controls { padding: 10px; }
+}

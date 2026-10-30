@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #0d1117;
+  --text: #c9d1d9;
+  --accent: #58a6ff;
+  --success: #3fb950;
+  --error: #f85149;
+  --border: #30363d;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.terminal {
+  width: 100%;
+  max-width: 600px;
+  background: #161b22;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.header {
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.line { margin-bottom: 10px; }
+.highlight { color: var(--accent); font-weight: bold; }
+.msg { margin-top: 10px; min-height: 20px; }
+.msg.error { color: var(--error); }
+.msg.success { color: var(--success); }
+
+input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 16px;
+  padding: 8px 0;
+  margin-bottom: 15px;
+  outline: none;
+}
+input:focus { border-bottom-color: var(--accent); }
+input::placeholder { color: #484f58; }
+
+button {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 8px 16px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 10px;
+}
+button:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.section {
+  border: 1px dashed var(--border);
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
