@@ -10,8 +10,14 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
     height: '100%',
     width: '100%',
-    videoId: '', // سيتم تحديثه لاحقاً
-    playerVars: { 'autoplay': 0, 'controls': 0, 'disablekb': 1 },
+    videoId: '',
+    playerVars: { 
+      'autoplay': 0, 
+      'controls': 0, 
+      'disablekb': 1,
+      'origin': window.location.origin, // إخبار يوتيوب بمصدر الطلب
+      'widget_referrer': window.location.origin // ترويسة إضافية
+    },
     events: {
       'onStateChange': onPlayerStateChange
     }
